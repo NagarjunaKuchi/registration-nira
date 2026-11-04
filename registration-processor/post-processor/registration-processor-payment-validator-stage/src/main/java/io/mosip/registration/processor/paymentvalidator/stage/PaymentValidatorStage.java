@@ -134,6 +134,10 @@ public class PaymentValidatorStage extends MosipVerticleAPIManager {
 	//alien
 	@Value("${taxhead.new.alien}")
 	private String taxheadnewalien;
+
+	@Value("${taxhead.cop.alien}")
+	private String taxheadcopalien;
+
 	@Value("${amount.new.alien}")
 	private String amountnewalien;
 
@@ -556,6 +560,10 @@ public class PaymentValidatorStage extends MosipVerticleAPIManager {
 		if("Alien New Registration".equalsIgnoreCase(citizenshipTypePacket)){
 			paidFor = "NEWAID";
 		}
+		else if("Alien-COP".equalsIgnoreCase(citizenshipTypePacket)){
+			paidFor = "NEWAID";
+			response.setProcessFlow("UPDATE");
+		}
 		else if("Renewal of Alien".equalsIgnoreCase(citizenshipTypePacket)){
 			paidFor = "RENAID";
 		}
@@ -591,6 +599,11 @@ public class PaymentValidatorStage extends MosipVerticleAPIManager {
 			}
 			//
 			else if(response.getTaxHeadCode().equalsIgnoreCase(taxheadnewalien)){
+				if(response.getSubServiceTypePaidFor().equalsIgnoreCase(paidFor)) {
+					return true;
+				}
+			}
+			else if(response.getTaxHeadCode().equalsIgnoreCase(taxheadcopalien)){
 				if(response.getSubServiceTypePaidFor().equalsIgnoreCase(paidFor)) {
 					return true;
 				}
