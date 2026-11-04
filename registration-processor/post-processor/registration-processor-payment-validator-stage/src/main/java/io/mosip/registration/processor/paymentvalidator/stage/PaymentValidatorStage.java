@@ -134,6 +134,10 @@ public class PaymentValidatorStage extends MosipVerticleAPIManager {
 	//alien
 	@Value("${taxhead.new.alien}")
 	private String taxheadnewalien;
+
+	@Value("${taxhead.cop.alien}")
+	private String taxheadcopalien;
+
 	@Value("${amount.new.alien}")
 	private String amountnewalien;
 
@@ -437,10 +441,14 @@ public class PaymentValidatorStage extends MosipVerticleAPIManager {
 
 	@Override
 	public void deployVerticle() {
-		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
-		this.consumeAndSend(mosipEventBus, MessageBusAddress.PAYMENT_VALIDATOR_BUS_IN,
-				MessageBusAddress.PAYMENT_VALIDATOR_BUS_OUT, messageExpiryTimeLimit);
-
+//		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
+//		this.consumeAndSend(mosipEventBus, MessageBusAddress.PAYMENT_VALIDATOR_BUS_IN,
+//				MessageBusAddress.PAYMENT_VALIDATOR_BUS_OUT, messageExpiryTimeLimit);
+		MessageDTO obj = new MessageDTO();  // Initialize the object
+		obj.setReg_type("UPDATE");
+		obj.setRid("29806194362892");
+		obj.setWorkflowInstanceId("9712c6ca-c202-4b32-82dd-12a857cc8e59");
+		process(obj);
 		//process(new MessageDTO());
 	}
 
@@ -556,6 +564,9 @@ public class PaymentValidatorStage extends MosipVerticleAPIManager {
 		if("Alien New Registration".equalsIgnoreCase(citizenshipTypePacket)){
 			paidFor = "NEWAID";
 		}
+		else if("Alien-COP".equalsIgnoreCase(citizenshipTypePacket)){
+			paidFor = "NEWAID";
+		}
 		else if("Renewal of Alien".equalsIgnoreCase(citizenshipTypePacket)){
 			paidFor = "RENAID";
 		}
@@ -591,6 +602,11 @@ public class PaymentValidatorStage extends MosipVerticleAPIManager {
 			}
 			//
 			else if(response.getTaxHeadCode().equalsIgnoreCase(taxheadnewalien)){
+				if(response.getSubServiceTypePaidFor().equalsIgnoreCase(paidFor)) {
+					return true;
+				}
+			}
+			else if(response.getTaxHeadCode().equalsIgnoreCase(taxheadcopalien)){
 				if(response.getSubServiceTypePaidFor().equalsIgnoreCase(paidFor)) {
 					return true;
 				}
