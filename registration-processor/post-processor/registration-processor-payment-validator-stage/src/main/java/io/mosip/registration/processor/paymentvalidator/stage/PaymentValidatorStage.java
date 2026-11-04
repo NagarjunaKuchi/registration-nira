@@ -441,14 +441,10 @@ public class PaymentValidatorStage extends MosipVerticleAPIManager {
 
 	@Override
 	public void deployVerticle() {
-//		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
-//		this.consumeAndSend(mosipEventBus, MessageBusAddress.PAYMENT_VALIDATOR_BUS_IN,
-//				MessageBusAddress.PAYMENT_VALIDATOR_BUS_OUT, messageExpiryTimeLimit);
-		MessageDTO obj = new MessageDTO();  // Initialize the object
-		obj.setReg_type("UPDATE");
-		obj.setRid("29806194362892");
-		obj.setWorkflowInstanceId("9712c6ca-c202-4b32-82dd-12a857cc8e59");
-		process(obj);
+		mosipEventBus = this.getEventBus(this, clusterManagerUrl, workerPoolSize);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.PAYMENT_VALIDATOR_BUS_IN,
+				MessageBusAddress.PAYMENT_VALIDATOR_BUS_OUT, messageExpiryTimeLimit);
+
 		//process(new MessageDTO());
 	}
 
